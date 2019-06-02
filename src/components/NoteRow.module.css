@@ -1,0 +1,14 @@
+.noteRow {
+    width: 500px;
+    height: 40px;
+    background: red;
+    text-align: center;
+    margin: 10px;
+    box-sizing: border-box;
+    padding: 4px;
+    border: 5px solid transparent;
+}
+
+.current {
+    border: 5px solid green;
+}
