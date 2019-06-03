@@ -6,7 +6,9 @@ const notes = {
     G5: {label: 'G-5', frequency: 784.0},
     A5: {label: 'A-5', frequency: 880.0},
     B5: {label: 'B-5', frequency: 987.8},
-    C6: {label: 'C-6', frequency: 1046.5}
+    C6: {label: 'C-6', frequency: 1046.5},
+    D6: {label: 'D-6', frequency: 1174.7},
+    E6: {label: 'E-6', frequency: 1318.5},
 };
 
 export default notes;

@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import NoteRow from '../components/NoteRow';
 
 import NOTES from '../notes';
+import KEYMAP from '../keymap';
 
 class App extends React.Component {
     constructor(props) {
@@ -43,8 +44,8 @@ class App extends React.Component {
         this.appRef.current.focus();
     }
 
-    onKeyDown = (e) => {
-        switch(e.key) {
+    onKeyDown = (pressedKey) => {
+        switch(pressedKey) {
             case 'ArrowUp':
                 this.props.curPosPrev();
                 break;
@@ -58,11 +59,20 @@ class App extends React.Component {
                 this.togglePlay();
                 break;
             case 'q':
+            case 'w':
+            case 'e':
+            case 'r':
+            case 't':
+            case 'y':
+            case 'u':
+            case 'i':
+            case 'o':
+            case 'p':
                 if (this.props.isRecording) {
                     this.setState(state => ({
                             notes: state.notes.map((note, i) => {
                                 if (i === this.props.curPos) {
-                                    return NOTES.C5;
+                                    return (NOTES[KEYMAP[pressedKey]]);
                                 } else {
                                     return note;
                                 }
@@ -140,7 +150,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div ref={this.appRef} tabIndex='0' className="App" onKeyDown={(e) => {this.onKeyDown(e)}}>
+            <div ref={this.appRef} tabIndex='0' className="App" onKeyDown={(e) => {this.onKeyDown(e.key)}}>
                 <button onClick={(e) => {this.props.toggleIsRecording(); e.target.blur()}} className={this.props.isRecording ? styles.recording : ''}>isRecording</button>
                 <button onClick={this.togglePlay}>{!this.state.isPlaying ? 'play' : 'pause'}</button>
                 <input onChange={(e) => {this.onVolumeChange(e.target.value)}} type='range' min='0' max='1' defaultValue={this.state.volume} step='0.1'/>
