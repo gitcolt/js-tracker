@@ -7,7 +7,7 @@ class NoteRow extends React.Component {
 
     render() {
         return (
-            <div className={`${styles.noteRow} ${this.props.pos === this.props.curPos ? styles.current : ''}`}>{this.props.freq}</div>
+            <div className={`${styles.noteRow} ${this.props.pos === this.props.curPos ? styles.current : ''}`}>{this.props.label}</div>
         );
     }
 }

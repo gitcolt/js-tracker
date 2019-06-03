@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import NoteRow from '../components/NoteRow';
 
-import * as noteFrequencies from '../noteFrequencies';
+import NOTES from '../notes';
 
 class App extends React.Component {
     constructor(props) {
@@ -26,14 +26,15 @@ class App extends React.Component {
     }
 
     state = {
-        notes: [{freq: 261.6},
-                {freq: 293.7},
-                {freq: 329.6},
-                {freq: 349.2},
-                {freq: 392.0},
-                {freq: 440.0},
-                {freq: 493.9},
-                {freq: 523.3}],
+        isPlaying: false,
+        notes: [NOTES.C5,
+                NOTES.D5,
+                NOTES.E5,
+                NOTES.F5,
+                NOTES.G5,
+                NOTES.A5,
+                NOTES.B5,
+                NOTES.C6],
         bpm: 125,
         volume: 0.1,
     };
@@ -54,17 +55,14 @@ class App extends React.Component {
                 this.props.toggleIsRecording();
                 break;
             case 'Enter':
-                this.play();
+                this.togglePlay();
                 break;
             case 'q':
                 if (this.props.isRecording) {
                     this.setState(state => ({
                             notes: state.notes.map((note, i) => {
                                 if (i === this.props.curPos) {
-                                    return {
-                                        ...note,
-                                        freq: noteFrequencies.C5
-                                    };
+                                    return NOTES.C5;
                                 } else {
                                     return note;
                                 }
@@ -80,7 +78,7 @@ class App extends React.Component {
     scheduleNote = (notePos, time) => {
         this.notesInQueue.push({pos: notePos, time: time});
 
-        let frequency = this.state.notes[notePos].freq;
+        let frequency = this.state.notes[notePos].frequency;
         if (frequency === null) return;
 
         let osc = this.audioContext.createOscillator();
@@ -97,7 +95,7 @@ class App extends React.Component {
             this.nextNoteTime += this.noteLength;
             this.nextPos = (this.nextPos + 1) % this.state.notes.length;
         }
-        setTimeout(this.scheduler, this.lookAheadSeconds);
+        this.timer = setTimeout(this.scheduler, this.lookAheadSeconds);
     }
 
     updatePos = _ =>  {
@@ -119,6 +117,7 @@ class App extends React.Component {
     }
 
     play = () => {
+        this.setState({isPlaying: true});
         this.nextNoteTime = this.audioContext.currentTime;
         this.nextPos = this.props.curPos;
         this.lastPosDrawn = this.props.curPos;
@@ -126,14 +125,27 @@ class App extends React.Component {
         this.updatePos();
     }
 
+    stop = () => {
+        clearTimeout(this.timer);
+        this.setState({isPlaying: false});
+    }
+
+    togglePlay = () => {
+        if (!this.state.isPlaying) {
+            this.play();
+        } else {
+            this.stop();
+        }
+    }
+
     render() {
         return (
             <div ref={this.appRef} tabIndex='0' className="App" onKeyDown={(e) => {this.onKeyDown(e)}}>
                 <button onClick={(e) => {this.props.toggleIsRecording(); e.target.blur()}} className={this.props.isRecording ? styles.recording : ''}>isRecording</button>
-                <button onClick={() => {this.play()}}>play</button>
+                <button onClick={this.togglePlay}>{!this.state.isPlaying ? 'play' : 'pause'}</button>
                 <input onChange={(e) => {this.onVolumeChange(e.target.value)}} type='range' min='0' max='1' defaultValue={this.state.volume} step='0.1'/>
                     {this.state.notes.map((note, i) =>
-                        <NoteRow key={i} pos={i} freq={note.freq}></NoteRow>
+                        <NoteRow key={i} pos={i} label={note.label}></NoteRow>
                     )}
             </div>
         )
