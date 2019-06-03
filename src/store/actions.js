@@ -1,1 +1,3 @@
-export const ADVANCE = 'ADVANCE';
+export const CUR_POS_NEXT = 'CUR_POS_NEXT';
+export const CUR_POS_PREV = 'CUR_POS_PREV';
+export const TOGGLE_IS_RECORDING = 'TOGGLE_IS_RECORDING';

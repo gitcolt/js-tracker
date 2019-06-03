@@ -1,7 +1,7 @@
 .noteRow {
     width: 500px;
     height: 40px;
-    background: red;
+    background: lightgray;
     text-align: center;
     margin: 10px;
     box-sizing: border-box;
