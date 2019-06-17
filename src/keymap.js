@@ -8,7 +8,8 @@ const keymap = {
     u: 'B5',
     i: 'C6',
     o: 'D6',
-    p: 'E6'
+    p: 'E6',
+    Backspace: 'none'
 };
 
 export default keymap;
