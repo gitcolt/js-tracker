@@ -10,20 +10,77 @@ const sequence = [
 const pattern0 = {
     id: 0,
     rows: [
-        [{note: NOTES.C5,    instrument: null},{note: NOTES.F5, instrument: null}],
-        [{note: NOTES.C5,    instrument: null},{note: null, instrument: null}],
-        [{note: null,        instrument: null},{note: null, instrument: null}],
-        [{note: NOTES.C5,    instrument: null},{note: null, instrument: null}]
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.F5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: NOTES.G5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.C5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.A5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: NOTES.As5,   instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.A5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.F5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.A5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D6,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: NOTES.C5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.C5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: NOTES.A4,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.E5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
     ]
 };
 
 const pattern1 = {
     id: 1,
     rows: [
-        [{note: NOTES.E5,    instrument: null},{note: null, instrument: null}],
-        [{note: NOTES.D5,    instrument: null},{note: null, instrument: null}],
-        [{note: null,        instrument: null},{note: null, instrument: null}],
-        [{note: null,        instrument: null},{note: null, instrument: null}]
+        [{note: NOTES.E5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: NOTES.D5,    instrumentIdx: 0},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}],
+        [{note: null,        instrumentIdx: null},{note: null, instrumentIdx: null}]
     ]
 };
 
@@ -32,8 +89,17 @@ const patterns = [
     pattern1
 ];
 
-const sequenceReducer = (state = sequence, action) => {
-    return sequence;
+const sequenceReducer = (sequenceState = sequence, action) => {
+    switch(action.type) {
+        case 'ADD_PATTERN_TO_SEQUENCE':
+            return sequenceState.concat(action.payload.patternId);
+        case 'REMOVE_PATTERN_FROM_SEQUENCE':
+            return sequenceState.filter((patternId, i) =>
+                i !== sequenceState.length - 1
+            )
+        default:
+            return sequenceState;
+    }
 }
 
 const patternsReducer = (patternsState = patterns, action) =>
@@ -43,14 +109,47 @@ const patternsReducer = (patternsState = patterns, action) =>
 
 const patternReducer = (patternState = [], action) => {
     switch(action.type) {
-        case 'ADD_ROW':
-            return (patternState.id === action.payload.patternId) ? {
+        case 'ADD_TRACK':
+            return {
                 ...patternState,
-                rows: patternState.rows.concat({
-                    note: null,
-                    instrument: null
-                })
-            } : patternState;
+                rows: patternState.rows.map((row) => 
+                    row.concat({note: null, instrumentIdx: null})
+                )
+            }
+        case 'SUBTRACT_TRACK':
+            return {
+                ...patternState,
+                rows: patternState.rows.map((row) =>
+                    row.filter((track, i) =>
+                        (i !== row.length - 1)
+                    )
+                )
+            }
+        case 'ADD_ROW':
+            if (patternState.id === action.payload.patternId) {
+                let newRow = [];
+                for (let i = 0; i < action.payload.numTracks; i++) {
+                    newRow.push({note: null, instrumentIdx: null});
+                }
+                return {
+                    ...patternState,
+                    rows: patternState.rows.concat([newRow])
+                }
+            } else {
+                return patternState;
+            }
+
+        case 'SUBTRACT_ROW':
+            if (patternState.id === action.payload.patternId) {
+                return {
+                    ...patternState,
+                    rows: patternState.rows.filter((row, i) =>
+                        (i !== patternState.rows.length - 1)
+                    )
+                }
+            } else {
+                return patternState;
+            }
 
         case 'RECORD_NOTE':
             return (patternState.id === action.payload.patternId) ? {
@@ -60,7 +159,7 @@ const patternReducer = (patternState = [], action) => {
                         row.map((track, j) =>
                             (j === action.payload.trackNum) ? {
                                 note: action.payload.note,
-                                instrument: null
+                                instrumentIdx: action.payload.instrumentIdx
                             } : track
                         ) : row
                 )
@@ -85,12 +184,22 @@ const curPosReducer = (curPosState = 0, action) => {
 const isRecordingReducer = (isRecordingState = false, action) =>
     (action.type === actionTypes.TOGGLE_IS_RECORDING) ? !isRecordingState : isRecordingState;
 
+const instruments = [
+    {label: 'sawtooth'},
+    {label: 'triangle'},
+    {label: 'sine'},
+    {label: 'square'},
+];
+
+const instrumentsReducer = (instrumentsState = instruments, action) =>
+    instrumentsState
+
 const appReducer = combineReducers({
     curPos: curPosReducer,
     isRecording: isRecordingReducer,
     patterns: patternsReducer,
     sequence: sequenceReducer,
-    numTracks: () => 2
+    instruments: instrumentsReducer
 });
 
 export default appReducer;

@@ -1,14 +1,4 @@
 .App {
-    /*
-  text-align: center;
-  */
+    overflow: hidden;
 }
 
-.recording {
-    background: red;
-}
-
-#trackContainer {
-    background: blue;
-    display: flex;
-}

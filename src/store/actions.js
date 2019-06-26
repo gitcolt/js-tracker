@@ -1,3 +1,11 @@
 export const CUR_POS_NEXT = 'CUR_POS_NEXT';
 export const CUR_POS_PREV = 'CUR_POS_PREV';
 export const TOGGLE_IS_RECORDING = 'TOGGLE_IS_RECORDING';
+export const ADD_ROW = 'ADD_ROW';
+export const SUBTRACT_ROW = 'SUBTRACT_ROW';
+export const ADD_TRACK = 'ADD_TRACK';
+export const SUBTRACT_TRACK = 'SUBTRACT_TRACK';
+export const RECORD_NOTE = 'RECORD_NOTE';
+export const PLAY = 'PLAY';
+export const ADD_PATTERN_TO_SEQUENCE = 'ADD_PATTERN_TO_SEQUENCE';
+export const REMOVE_PATTERN_FROM_SEQUENCE = 'REMOVE_PATTERN_FROM_SEQUENCE';
