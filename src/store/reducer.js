@@ -91,32 +91,54 @@ const patterns = [
 
 const sequenceReducer = (sequenceState = sequence, action) => {
     switch(action.type) {
-        case 'ADD_PATTERN_TO_SEQUENCE':
+        case actionTypes.ADD_PATTERN_TO_SEQUENCE:
             return sequenceState.concat(action.payload.patternId);
-        case 'REMOVE_PATTERN_FROM_SEQUENCE':
+        case actionTypes.REMOVE_PATTERN_FROM_SEQUENCE:
             return sequenceState.filter((patternId, i) =>
                 i !== sequenceState.length - 1
+            )
+        case actionTypes.SET_PATTERN_ID:
+            return sequenceState.map((patternId, i) => 
+                (i === action.payload.idx) ? action.payload.patternId : patternId
             )
         default:
             return sequenceState;
     }
 }
 
-const patternsReducer = (patternsState = patterns, action) =>
-    patternsState.map((pattern) =>
+const patternsReducer = (patternsState = patterns, action) => {
+    let updatedPatterns;
+    switch(action.type) {
+        case actionTypes.CREATE_NEW_PATTERN:
+            const rows = [];
+            const numRows = 5;
+            const numTracks = action.payload.numTracks;
+            for (let i = 0; i < numRows; i++) {
+                rows[i] = [];
+                for (let j = 0; j < numTracks; j++) {
+                    rows[i].push( {note: null, instrumentIdx: null} );
+                }
+            }
+            updatedPatterns = patternsState.concat({id: action.payload.newPatternId, rows: rows});
+            break;
+        default:
+            updatedPatterns = patternsState;
+    }
+    return updatedPatterns.map((pattern) =>
         patternReducer(pattern, action)
     )
+}
 
 const patternReducer = (patternState = [], action) => {
     switch(action.type) {
-        case 'ADD_TRACK':
+        case actionTypes.ADD_TRACK:
             return {
                 ...patternState,
                 rows: patternState.rows.map((row) => 
                     row.concat({note: null, instrumentIdx: null})
                 )
             }
-        case 'SUBTRACT_TRACK':
+        case actionTypes.SUBTRACT_TRACK:
             return {
                 ...patternState,
                 rows: patternState.rows.map((row) =>
@@ -125,7 +147,7 @@ const patternReducer = (patternState = [], action) => {
                     )
                 )
             }
-        case 'ADD_ROW':
+        case actionTypes.ADD_ROW:
             if (patternState.id === action.payload.patternId) {
                 let newRow = [];
                 for (let i = 0; i < action.payload.numTracks; i++) {
@@ -139,7 +161,7 @@ const patternReducer = (patternState = [], action) => {
                 return patternState;
             }
 
-        case 'SUBTRACT_ROW':
+        case actionTypes.SUBTRACT_ROW:
             if (patternState.id === action.payload.patternId) {
                 return {
                     ...patternState,
@@ -151,7 +173,7 @@ const patternReducer = (patternState = [], action) => {
                 return patternState;
             }
 
-        case 'RECORD_NOTE':
+        case actionTypes.RECORD_NOTE:
             return (patternState.id === action.payload.patternId) ? {
                 ...patternState,
                 rows: patternState.rows.map((row, i) =>
@@ -172,9 +194,9 @@ const patternReducer = (patternState = [], action) => {
 
 const curPosReducer = (curPosState = 0, action) => {
     switch(action.type) {
-        case 'CUR_POS_NEXT':
+        case actionTypes.CUR_POS_NEXT:
             return (curPosState + 1 % 8);
-        case 'CUR_POS_PREV':
+        case actionTypes.CUR_POS_PREV:
             return (curPosState - 1 < 0) ? 0 : (curPosState - 1);
         default:
             return curPosState;

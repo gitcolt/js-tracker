@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './App.module.css';
 import * as actionTypes from '../store/actions';
+import * as colors from '../colors';
 import {connect} from 'react-redux';
 
 import Row from '../components/Row';
@@ -12,7 +13,6 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.appRef = React.createRef();
         this.patternRef = React.createRef();
 
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -29,6 +29,9 @@ class App extends React.Component {
         this.masterGainNode = gainNode;
 
         this.rowHeight = 31;
+
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
     }
 
     state = {
@@ -41,7 +44,8 @@ class App extends React.Component {
     }
 
     componentDidMount = _ => {
-        this.appRef.current.focus();
+        window.addEventListener('keydown', this.onKeyDown);
+        window.addEventListener('mousedown', this.onMouseDown);
     }
 
     toggleIsRecording = _ => {
@@ -67,42 +71,51 @@ class App extends React.Component {
     }
 
     curPosNext = _ => {
-        const nextPos = ( (this.state.curPos + 1) % this.props.patterns[this.props.sequence[this.state.curSequenceIdx]].rows.length );
-        if (nextPos === 0) {
-            this.setState({
-                curSequenceIdx: (this.state.curSequenceIdx + 1) % this.props.sequence.length,
-                curPos: nextPos
-            });
-        } else {
-            this.setState({
-                curPos: nextPos
-            });
-        }
-        const scrollAmt = this.rowHeight*nextPos;
-        this.patternRef.current.scrollTop = scrollAmt;
-}
-
-    curPosPrev = _ => {
-        let prevPos = this.state.curPos - 1;
-        
-        if (prevPos < 0) {
-            const lastSequenceIdx = (this.state.curSequenceIdx - 1 < 0) ? (this.props.sequence.length - 1) : (this.state.curSequenceIdx - 1);
-            prevPos = this.props.patterns[this.props.sequence[lastSequenceIdx]].rows.length - 1;
-            this.setState({
-                curSequenceIdx: lastSequenceIdx,
-                curPos: prevPos
-            });
-        } else {
-            this.setState({
-                curPos: prevPos
-            });
-        }
-        const scrollAmt = this.rowHeight*prevPos;
-        this.patternRef.current.scrollTop = scrollAmt;
+        this.setState((prevState, props) => {
+            const nextPos = ( (prevState.curPos + 1) % props.patterns[props.sequence[prevState.curSequenceIdx]].rows.length );
+            if (nextPos === 0) {
+                return {
+                    curSequenceIdx: (prevState.curSequenceIdx + 1) % props.sequence.length,
+                    curPos: nextPos
+                }
+            } else {
+                return {
+                    curPos: nextPos
+                }
+            }
+        }, () => {
+            const scrollAmt = this.rowHeight*this.state.curPos;
+            this.patternRef.current.scrollTop = scrollAmt;
+        });
     }
 
-    onKeyDown = (pressedKey) => {
-        switch(pressedKey) {
+    curPosPrev = _ => {
+        this.setState((prevState, props) => {
+            let prevPos = prevState.curPos - 1;
+            if (prevPos < 0) {
+                const lastSequenceIdx = (prevState.curSequenceIdx - 1 < 0) ? (props.sequence.length - 1) : (prevState.curSequenceIdx - 1);
+                prevPos = props.patterns[props.sequence[lastSequenceIdx]].rows.length - 1;
+                return {
+                    curSequenceIdx: lastSequenceIdx,
+                    curPos: prevPos
+                }
+            } else {
+                return {
+                    curPos: prevPos
+                }
+            }
+        }, () => {
+            const scrollAmt = this.rowHeight*this.state.curPos;
+            this.patternRef.current.scrollTop = scrollAmt;
+        });
+    }
+
+    onMouseDown = (e) => {
+        e.preventDefault();
+    }
+
+    onKeyDown = (e) => {
+        switch(e.code) {
             case 'ArrowDown':
                 if (!this.state.isPlaying)
                     this.curPosNext();
@@ -117,37 +130,50 @@ class App extends React.Component {
             case 'ArrowRight':
                 this.curColumnRight();
                 break;
-            case ' ':
+            case 'Enter':
+                this.togglePlay();
+                break;
+            case 'Space':
                 this.props.toggleIsRecording();
                 break;
-            case 'z':
-            case 'x':
-            case 'c':
-            case 'v':
-            case 'b':
-            case 'n':
-            case 'm':
-            case 'q':
-            case '2':
-            case 'w':
-            case '3':
-            case 'e':
-            case 'r':
-            case '5':
-            case 't':
-            case '6':
-            case 'y':
-            case '7':
-            case 'u':
-            case 'i':
-            case '9':
-            case 'o':
-            case '0':
-            case 'p':
-            case 'Backspace': 
-                this.playNote(NOTES[KEYMAP[pressedKey]]);
+            case 'KeyZ':
+            case 'KeyS':
+            case 'KeyX':
+            case 'KeyD':
+            case 'KeyC':
+            case 'KeyV':
+            case 'KeyG':
+            case 'KeyB':
+            case 'KeyH':
+            case 'KeyN':
+            case 'KeyJ':
+            case 'KeyM':
+            case 'Comma':
+            case 'KeyL':
+            case 'Period':
+            case 'Semicolon':
+            case 'Slash':
+            case 'KeyQ':
+            case 'Digit2':
+            case 'KeyW':
+            case 'Digit3':
+            case 'KeyE':
+            case 'KeyR':
+            case 'Digit5':
+            case 'KeyT':
+            case 'Digit6':
+            case 'KeyY':
+            case 'Digit7':
+            case 'KeyU':
+            case 'KeyI':
+            case 'Digit9':
+            case 'KeyO':
+            case 'Digit0':
+            case 'KeyP':
+            case 'Backspace':
+                this.playNote(NOTES[KEYMAP[e.code]]);
                 if (this.props.isRecording) {
-                    const note = NOTES[KEYMAP[pressedKey]];
+                    const note = NOTES[KEYMAP[e.code]];
                     let trackNum = Math.floor(this.state.curColumn / 2);
                     let instrumentIdx = this.state.selectedInstrumentIdx;
                     this.props.recordNote(note, instrumentIdx, this.state.curPos, trackNum, this.props.patterns[this.props.sequence[this.state.curSequenceIdx]].id);
@@ -219,12 +245,15 @@ class App extends React.Component {
             this.scheduleNote(this.nextPos, this.nextNoteTime);
             //this.nextNoteTime += this.noteLength;
             this.nextNoteTime += 0.135;
-            this.nextPos = (this.nextPos + 1) % this.props.patterns[this.props.sequence[this.state.curPlayingSequenceIdx]].rows.length;
 
-            if (this.nextPos === 0) 
-                this.setState({
-                    curPlayingSequenceIdx: (this.state.curPlayingSequenceIdx + 1) % this.props.sequence.length
-                });
+            this.setState((prevState, props) => {
+                this.nextPos = (this.nextPos + 1) % props.patterns[props.sequence[prevState.curPlayingSequenceIdx]].rows.length;
+                if (this.nextPos === 0) {
+                    return {
+                        curPlayingSequenceIdx: (prevState.curPlayingSequenceIdx + 1) % props.sequence.length
+                    }
+                }
+            });
         }
         this.timer = setTimeout(this.scheduler, this.lookAheadSeconds);
     }
@@ -249,9 +278,9 @@ class App extends React.Component {
         this.nextNoteTime = this.audioContext.currentTime;
         this.nextPos = this.state.curPos;
         this.lastPosDrawn = this.state.curPos;
-        this.setState({
-            curPlayingSequenceIdx: this.state.curSequenceIdx
-        });
+        this.setState((prevState, props) => ({
+            curPlayingSequenceIdx: prevState.curSequenceIdx
+        }));
         this.scheduler();
         this.updatePos();
     }
@@ -262,6 +291,14 @@ class App extends React.Component {
         });
 
         clearTimeout(this.timer);
+    }
+
+    togglePlay = _ => {
+        if (!this.state.isPlaying) {
+            this.play();
+        } else {
+            this.stop();
+        }
     }
     
     onSelectInstrument = (i) => {
@@ -281,6 +318,20 @@ class App extends React.Component {
         this.props.removePatternFromSequence();
     }
 
+    incrementSequencePatternId = _ => {
+        const patternId = this.props.sequence[this.state.curSequenceIdx] + 1;
+        if (!this.props.patterns.find((pattern) => pattern.id === patternId)) {
+            this.props.createNewPattern(patternId, this.getNumTracks());
+        }
+        this.props.setSequencePatternId(this.state.curSequenceIdx, patternId);
+    }
+
+    decrementSequencePatternId = _ => {
+        const patternId = this.props.sequence[this.state.curSequenceIdx] - 1;
+        if (patternId >= 0)
+            this.props.setSequencePatternId(this.state.curSequenceIdx, patternId);
+    }
+
     onSelectSequenceIdx = (i) => {
         this.setState({
             curPos: 0,
@@ -290,35 +341,38 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className={styles.App} ref={this.appRef} tabIndex='0' onKeyDown={(e) => {this.onKeyDown(e.key)}}>
+            <div className={styles.App}>
                 <div>
                     pattern: {this.props.sequence[this.state.curSequenceIdx]}
                 </div>
-                <ul style={{listStyle: 'none', background: 'lightyellow'}} >
+                <ul style={{fontFamily: 'Roboto Mono', listStyle: 'none', background: colors.sequenceBackground, display: 'inline-block', paddingLeft: '0'}} >
                     {this.props.sequence.map((patternIdx, i) =>
-                        <li key={i} onClick={() => this.onSelectSequenceIdx(i)} style={(i === this.state.curSequenceIdx) ? {background: 'yellow'} : {}} >{i}| {patternIdx}</li>
+                        <li key={i} onClick={() => this.onSelectSequenceIdx(i)} style={(i === this.state.curSequenceIdx) ? {background: colors.selectedSequence} : {}} >{i}| {patternIdx}</li>
                     )}
                 </ul>
-                <button onClick={this.extendSequence}>+</button>
-                <button onClick={this.shortenSequence}>-</button>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100px'}}>
+                    <button style={{gridColumn: '1 / 3'}} onClick={this.extendSequence}>Insert</button>
+                    <button style={{gridColumn: '1 / 3'}} onClick={this.shortenSequence}>Delete</button>
+                    <button onClick={this.incrementSequencePatternId}>+</button>
+                    <button onClick={this.decrementSequencePatternId}>-</button>
+                </div>
 
-                <button style={{display: 'block'}} onClick={this.toggleIsRecording}>
+                <button onClick={this.toggleIsRecording}>
                     {this.props.isRecording ? 'is recording' : 'is not recording'}
                 </button>
                 <button onClick={() => this.props.addRow(this.props.patterns[this.state.curSequenceIdx].id, this.getNumTracks())}>Add Row</button>
                 <button onClick={() => this.props.subRow(this.props.patterns[this.state.curSequenceIdx].id)}>Sub Row</button>
                 <button onClick={this.props.addTrack}>Add Track</button>
                 <button onClick={this.props.subTrack}>Sub Track</button>
-                <button onClick={this.play} >Play</button>
-                <button onClick={this.stop} >Stop</button>
+                <button style={{display: 'block'}} onClick={this.togglePlay} >{!this.state.isPlaying ? 'Play' : 'Stop'}</button>
 
-                <select style={{background: 'blue'}} onChange={(e) => {this.onSelectInstrument(e.target.value)}} value={this.state.selectedInstrumentIdx}>
+                <select style={{background: colors.instrumentMotif}} onChange={(e) => {this.onSelectInstrument(e.target.value)}} value={this.state.selectedInstrumentIdx}>
                     {this.props.instruments.map((instrument, i) =>
                         <option key={i} value={i}>{instrument.label}</option>
                     )}
                 </select>
 
-                <div ref={this.patternRef} style={{boxSizing: 'border-box', background: 'lightgray', padding: '35vh 0', overflowY: 'scroll', height: '70vh', width: '99%', position: 'absolute', bottom: '0'}}>
+                <div ref={this.patternRef} style={{boxSizing: 'border-box', background: colors.patternBackground, padding: '35vh 0', overflowY: 'scroll', height: '70vh', width: '99%', position: 'absolute', bottom: '0'}}>
                 {this.props.patterns[this.props.sequence[this.state.curSequenceIdx]].rows.map((row, i) =>
                     <Row height={this.rowHeight} key={i} index={i} row={row} isRowSelected={i === this.state.curPos} curColumn={this.state.curColumn}>
                     </Row>
@@ -339,7 +393,9 @@ const mapDispatchToProps = dispatch => {
         recordNote: (note, instrumentIdx, pos, trackNum, patternId) => dispatch({type: actionTypes.RECORD_NOTE, payload: {note, instrumentIdx, pos, trackNum, patternId}}),
         play: () => dispatch({type: actionTypes.PLAY}),
         addPatternToSequence: (patternId) => dispatch({type: actionTypes.ADD_PATTERN_TO_SEQUENCE, payload: {patternId}}),
-        removePatternFromSequence: _ => dispatch({type: actionTypes.REMOVE_PATTERN_FROM_SEQUENCE})
+        removePatternFromSequence: _ => dispatch({type: actionTypes.REMOVE_PATTERN_FROM_SEQUENCE}),
+        setSequencePatternId: (idx, patternId) => dispatch({type: actionTypes.SET_PATTERN_ID, payload: {idx, patternId}}),
+        createNewPattern: (newPatternId, numTracks) => dispatch({type: actionTypes.CREATE_NEW_PATTERN, payload: {newPatternId, numTracks}})
     };
 }
 
