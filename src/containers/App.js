@@ -345,16 +345,26 @@ class App extends React.Component {
                 <div>
                     pattern: {this.props.sequence[this.state.curSequenceIdx]}
                 </div>
-                <ul style={{fontFamily: 'Roboto Mono', listStyle: 'none', background: colors.sequenceBackground, display: 'inline-block', paddingLeft: '0'}} >
-                    {this.props.sequence.map((patternIdx, i) =>
-                        <li key={i} onClick={() => this.onSelectSequenceIdx(i)} style={(i === this.state.curSequenceIdx) ? {background: colors.selectedSequence} : {}} >{i}| {patternIdx}</li>
-                    )}
-                </ul>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100px'}}>
-                    <button style={{gridColumn: '1 / 3'}} onClick={this.extendSequence}>Insert</button>
-                    <button style={{gridColumn: '1 / 3'}} onClick={this.shortenSequence}>Delete</button>
-                    <button onClick={this.incrementSequencePatternId}>+</button>
-                    <button onClick={this.decrementSequencePatternId}>-</button>
+                <div style={{display: 'flex', justifyContent: 'space-between'}} >
+                    <div id='sequence-container' style={{display: 'block', height: '60px', margin: '0'}}>
+                        <ul id='sequence' style={{margin: '0', height: 'inherit', cursor: 'pointer', fontFamily: 'Roboto Mono', listStyle: 'none', background: colors.sequenceBackground, display: 'block', paddingLeft: '0', overflowY: 'scroll', float: 'left'}} >
+                            {this.props.sequence.map((patternIdx, i) =>
+                                <li key={i} onClick={() => this.onSelectSequenceIdx(i)} style={(i === this.state.curSequenceIdx) ? {background: colors.selectedSequence} : {}} >{i}| {patternIdx}</li>
+                            )}
+                        </ul>
+                        <div id='sequence-controls' style={{display: 'grid', gridTemplateColumns: '1fr 1fr', height: 'inherit', width: '100px', float: 'left'}}>
+                            <button style={{gridColumn: '1 / 3'}} onClick={this.extendSequence}>Insert</button>
+                            <button style={{gridColumn: '1 / 3'}} onClick={this.shortenSequence}>Delete</button>
+                            <button onClick={this.incrementSequencePatternId}>+</button>
+                            <button onClick={this.decrementSequencePatternId}>-</button>
+                        </div>
+                    </div>
+
+                    <ul style={{background: colors.instrumentMotif, listStyle: 'none', padding: '0', cursor: 'pointer', overflowY: 'scroll'}} >
+                        {this.props.instruments.map((instrument, i) =>
+                            <li style={{background: (i === this.state.selectedInstrumentIdx) ? 'dark' + colors.instrumentMotif : '', color: 'white'}} key={i} onClick={() => this.onSelectInstrument(i)} >{instrument.label}</li>
+                        )}
+                    </ul>
                 </div>
 
                 <button onClick={this.toggleIsRecording}>
@@ -366,11 +376,6 @@ class App extends React.Component {
                 <button onClick={this.props.subTrack}>Sub Track</button>
                 <button style={{display: 'block'}} onClick={this.togglePlay} >{!this.state.isPlaying ? 'Play' : 'Stop'}</button>
 
-                <select style={{background: colors.instrumentMotif}} onChange={(e) => {this.onSelectInstrument(e.target.value)}} value={this.state.selectedInstrumentIdx}>
-                    {this.props.instruments.map((instrument, i) =>
-                        <option key={i} value={i}>{instrument.label}</option>
-                    )}
-                </select>
 
                 <div ref={this.patternRef} style={{boxSizing: 'border-box', background: colors.patternBackground, padding: '35vh 0', overflowY: 'scroll', height: '70vh', width: '99%', position: 'absolute', bottom: '0'}}>
                 {this.props.patterns[this.props.sequence[this.state.curSequenceIdx]].rows.map((row, i) =>
